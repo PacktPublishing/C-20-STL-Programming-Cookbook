@@ -9,10 +9,10 @@ int main()
     std::cout << std::endl;
 
     ranges::sort(v);
-    for (int i : v)
-        std::cout << i << ", ";
+    ranges::for_each(v,
+        [] (auto i) {std::cout << i << ", ";});
     std::cout << std::endl;
-
+ 
     auto rng = v | ranges::view::remove_if([](int i){return i % 2 == 1;})
                  | ranges::view::transform([](int i){return std::to_string(i);});
     for (std::string i : rng)

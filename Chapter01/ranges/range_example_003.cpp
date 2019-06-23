@@ -1,10 +1,5 @@
-
 #include <range/v3/all.hpp>
-
-#include <vector>
-#include <string>
 #include <iostream>
-#include <algorithm>
 
 int main()
 {

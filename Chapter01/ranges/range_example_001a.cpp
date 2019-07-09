@@ -16,7 +16,7 @@ int main()
  
     std::vector<int> vi;
     std::copy_if(v.begin(), v.end(), 
-        std::back_inserter(vi), [](int i){return i % 2 != 1;});
+        std::back_inserter(vi), [](int i){return i % 2 == 0;});
 
     std::vector<std::string> vs;
     std::transform(vi.begin(), vi.end(), 

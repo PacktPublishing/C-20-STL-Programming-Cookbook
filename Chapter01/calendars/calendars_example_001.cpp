@@ -30,12 +30,10 @@ void test_calendars_02()
 {
     using namespace date;
 
-    auto date_1 = 2019_y / July / 9;
-    auto date_2 = 9_d / July / 2019_y;
+    date::year_month_day date_1 = 2019_y/July/9;
+    date::year_month_day date_2 = 9_d/July/2019;
     assert(date_1 == date_2);
 
-    date::year_month_day today = floor<days>(std::chrono::system_clock::now());
-    assert(today == date_1);
 
     std::cout << "test 01" << std::endl;
 

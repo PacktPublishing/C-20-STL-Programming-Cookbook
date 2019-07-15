@@ -1,4 +1,5 @@
 #include <date/date.h>
+#include <date/tz.h>
 
 #include <chrono>
 #include <iostream>
@@ -146,6 +147,16 @@ void test_calendars_06()
         std::chrono::floor<std::chrono::milliseconds>(std::chrono::system_clock::now());
 
     std::cout << "day time now: " << day_time_now << std::endl;
+
+    auto tp = date::sys_days{2019_y/7/13} + 5h + 15min + 9s;
+    std::cout << "a time point: " << tp << std::endl;
+
+    auto local_tp =
+        date::zoned_time{date::current_zone(), std::chrono::system_clock::now()};
+    std::cout << "a local time point : " << local_tp  << std::endl;
+
+    std::cout << date::zoned_time{date::current_zone(),
+        std::chrono::system_clock::now()}  << std::endl;
 }
 
 //-----------------------------------------------------------------------------

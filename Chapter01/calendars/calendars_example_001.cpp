@@ -145,18 +145,28 @@ void test_calendars_06()
 
     std::chrono::system_clock::time_point day_time_now =
         std::chrono::floor<std::chrono::milliseconds>(std::chrono::system_clock::now());
-
     std::cout << "day time now: " << day_time_now << std::endl;
-
-    auto tp = date::sys_days{2019_y/7/13} + 5h + 15min + 9s;
-    std::cout << "a time point: " << tp << std::endl;
-
     auto local_tp =
-        date::zoned_time{date::current_zone(), std::chrono::system_clock::now()};
-    std::cout << "a local time point : " << local_tp  << std::endl;
+        date::zoned_time{date::current_zone(), day_time_now};
+    std::cout << "local day time now: " << local_tp  << std::endl;
 
-    std::cout << date::zoned_time{date::current_zone(),
-        std::chrono::system_clock::now()}  << std::endl;
+
+    auto tp = date::sys_days{2019_y/July/13} + 5h + 15min + 9s;
+    std::cout << "a time point: " << tp << std::endl;
+    local_tp =
+        date::zoned_time{date::current_zone(), tp};
+    std::cout << "a local time point: " << local_tp  << std::endl;
+
+
+    auto tp_local = date::sys_days{2019_y/July/13} + 7h + 17min + 1s;
+    std::cout << "a local time point: " << tp_local << std::endl;
+    auto tp_new_york =
+        date::zoned_time{"America/New_York", tp_local};
+    std::cout << "a New York time point: " << tp_new_york  << std::endl;
+    auto tp_berlin =
+        date::zoned_time{"Europe/Berlin", tp_local};
+    std::cout << "a Berlin time point: " << tp_berlin  << std::endl;
+
 }
 
 //-----------------------------------------------------------------------------

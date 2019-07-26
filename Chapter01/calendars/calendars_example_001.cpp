@@ -109,7 +109,6 @@ void test_calendars_04a()
     std::cout << "day as time point: " << day_1 << std::endl;
 }
 
-
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 void test_calendars_05()
@@ -118,23 +117,13 @@ void test_calendars_05()
     using namespace date;
     std::cout << "*** test 05 ***" << std::endl;
 
-    // create today as a year_month_day from a time-point rouded to a day
+    // create today as a year_month_day from a time-point rounded to a day
     date::year_month_day today =
         std::chrono::floor<date::days>(std::chrono::system_clock::now());
-    std::cout << "year:  " << today.year() << std::endl;
-    std::cout << "month february:  " << date::month(2) << std::endl;
-    std::cout << "february last day:  " << date::month_day_last(date::month(2)) << std::endl;
-
-    // create a last february day as a year_month_day from today
-    date::year_month_day last_day_february{
-        today.year(),
-        date::month(2),
-        //date::day{date::month_day_last(date::month(2))}
-        date::day{21}
-    };
-    std::cout << "february last day: " << last_day_february << std::endl;
+    std::cout << "year:  "  << today.year() << std::endl;
+    std::cout << "month:  " << today.month() << std::endl;
+    std::cout << "day:  "   << today.day() << std::endl;
 }
-
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 void test_calendars_06()
@@ -143,30 +132,28 @@ void test_calendars_06()
     using namespace date;
     std::cout << "*** test 06 ***" << std::endl;
 
-    std::chrono::system_clock::time_point day_time_now =
+    auto day_time_now =
         std::chrono::floor<std::chrono::milliseconds>(std::chrono::system_clock::now());
     std::cout << "day time now: " << day_time_now << std::endl;
+
     auto local_tp =
         date::zoned_time{date::current_zone(), day_time_now};
-    std::cout << "local day time now: " << local_tp  << std::endl;
+    std::cout << "day time now local: " << local_tp  << std::endl;
 
 
-    auto tp = date::sys_days{2019_y/July/13} + 5h + 15min + 9s;
-    std::cout << "a time point: " << tp << std::endl;
-    local_tp =
-        date::zoned_time{date::current_zone(), tp};
-    std::cout << "a local time point: " << local_tp  << std::endl;
+    auto a_time_point =
+        date::sys_days{2019_y/July/13} + 5h + 15min + 9s;
+    std::cout << "a time point: " << a_time_point << std::endl;
 
-
-    auto tp_local = date::sys_days{2019_y/July/13} + 7h + 17min + 1s;
-    std::cout << "a local time point: " << tp_local << std::endl;
+    auto tp_local =
+        date::zoned_time{date::current_zone(), a_time_point};
+    std::cout << "a local time point: " << tp_local  << std::endl;
     auto tp_new_york =
-        date::zoned_time{"America/New_York", tp_local};
+        date::zoned_time{"America/New_York", a_time_point};
     std::cout << "a New York time point: " << tp_new_york  << std::endl;
     auto tp_berlin =
-        date::zoned_time{"Europe/Berlin", tp_local};
+        date::zoned_time{"Europe/Berlin", a_time_point};
     std::cout << "a Berlin time point: " << tp_berlin  << std::endl;
-
 }
 
 //-----------------------------------------------------------------------------

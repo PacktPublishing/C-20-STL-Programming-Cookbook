@@ -120,6 +120,8 @@ void test_calendars_05()
     // create today as a year_month_day from a time-point rounded to a day
     date::year_month_day today =
         std::chrono::floor<date::days>(std::chrono::system_clock::now());
+    std::cout << "year_month_day from time-point: " << today << std::endl;
+
     std::cout << "year:  "  << today.year() << std::endl;
     std::cout << "month:  " << today.month() << std::endl;
     std::cout << "day:  "   << today.day() << std::endl;

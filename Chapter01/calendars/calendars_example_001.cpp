@@ -78,7 +78,7 @@ void test_calendars_04()
 {
     using namespace std::chrono;
     using namespace date;
-    std::cout << "*** test 05 ***" << std::endl;
+    std::cout << "*** test 04 ***" << std::endl;
 
     // create a time-point using a date
     std::chrono::system_clock::time_point day_1 = date::sys_days{2019_y/July/13};

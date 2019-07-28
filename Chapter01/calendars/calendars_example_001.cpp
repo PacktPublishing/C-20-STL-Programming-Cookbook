@@ -32,7 +32,7 @@ void test_calendars_02()
     std::cout << "year: " << y << std::endl;
 
     // create a full-calendar-type from 
-    // three different field types: day, month and year
+    // three different field-types: day, month and year
     date::year_month_day date_1 = {date::year{2019},date::month{7},date::day{13}};
     std::cout << "year month day: " << date_1 << std::endl;
   
@@ -62,14 +62,13 @@ void test_calendars_03()
     auto day_time_now = std::chrono::system_clock::now();
     std::cout << "day: " << day_time_now << std::endl;
 
-    // rount this time-point to days
+    // round this time-point to days
     auto day_time_now_round = std::chrono::floor<date::days>(day_time_now);
     std::cout << "day rounded: " << day_time_now_round << std::endl;
 
     // create a year_month_day from the rouded time-point
     date::year_month_day date_1{day_time_now_round};
     std::cout << "year month day from time-point: " << date_1 << std::endl;
-
 }
 
 //-----------------------------------------------------------------------------
@@ -87,7 +86,7 @@ void test_calendars_04()
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-// define a duration with coarse precision: 24 hours.
+// define a duration with a coarse precision: 24 hours.
 using days_ = std::chrono::duration<int32_t, std::ratio<86400>>;
 
 template <class Duration>

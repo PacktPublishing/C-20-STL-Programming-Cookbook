@@ -1,19 +1,7 @@
 
-#include <functional>
-#include <cmath>
-#include <array>
-#include <list>
-#include <queue>
-#include <map>
-#include <vector>
-#include <iostream>
-
 #include <string>
-#include <algorithm>
-
-#include <stdexcept>
+#include <iostream>
 #include <cassert>
-
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------

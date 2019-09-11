@@ -45,12 +45,11 @@ void test_type_func_013()
 
 int main (int argc, char *argv[])
 {
-	
-	std::cout << "test_main" << std::endl;
+    std::cout << "test_main" << std::endl;
 
-	test_type_func_012();
-	test_type_func_013();
+    test_type_func_012();
+    test_type_func_013();
 
 
-	return 0;
+    return 0;
 }

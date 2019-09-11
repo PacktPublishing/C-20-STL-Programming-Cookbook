@@ -15,9 +15,9 @@ constexpr double harmonic_mean(int a, int b)
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-void test_type_func_012()
+void harmonic_mean_compile_time()
 {
-    std::cout << "*** test 12  harmonic mean of two numbers at compile time ***" << std::endl;
+    std::cout << "*** harmonic mean of two numbers at compile time ***" << std::endl;
 
     constexpr int a = 3;
     constexpr int b = 5;
@@ -30,9 +30,9 @@ void test_type_func_012()
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-void test_type_func_013()
+void harmonic_mean_run_time()
 {
-    std::cout << "*** test 13  harmonic mean of two numbers at run time ***" << std::endl;
+    std::cout << "*** harmonic mean of two numbers at run time ***" << std::endl;
 
     int a = 3;
     const int b = 5;
@@ -43,12 +43,13 @@ void test_type_func_013()
     std::cout << "Value computed at run time: " << hm << std::endl;
 }
 
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 int main (int argc, char *argv[])
 {
-    std::cout << "test_main" << std::endl;
 
-    test_type_func_012();
-    test_type_func_013();
+    harmonic_mean_compile_time();
+    harmonic_mean_run_time();
 
     return 0;
 }

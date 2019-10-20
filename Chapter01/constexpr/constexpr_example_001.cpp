@@ -19,7 +19,7 @@ void harmonic_mean_compile_time()
 {
     std::cout << "*** harmonic mean of two numbers at compile time ***" << std::endl;
 
-    constexpr int a = 3;
+    const int a = 3;
     constexpr int b = 5;
 
     constexpr double hm = harmonic_mean(a, b);

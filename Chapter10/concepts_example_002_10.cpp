@@ -18,7 +18,21 @@ concept bool Equality_comparable()
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 template <typename T, typename U>
-concept bool Same()
+concept bool Equality_comparable()
+{
+    return requires (T t, U u)
+    {
+        {t == u} -> bool;
+        {u == t} -> bool;        
+        {t != u} -> bool;
+        {u != t} -> bool;        
+    };   
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+template <typename T, typename U>
+concept bool Same_as()
 {
     return std::is_same<T, U>::value;   
 }
@@ -48,7 +62,7 @@ struct value_type<T[N]>
 };
 
 template<typename T>
-using Value_type = typename value_type<T>::type;
+using value_type_t = typename value_type<T>::type;
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -61,7 +75,7 @@ struct iterator_type
 };
 
 template<typename T>
-using Iterator_type = typename iterator_type<T>::type;
+using iterator_t = typename iterator_type<T>::type;
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -71,10 +85,10 @@ concept bool Input_iterator()
     return requires(I i)
     {
   	    // Must have a value type
-        typename Value_type<I>;
+        typename value_type_t<I>;
 
         // It can be dereferenced
-        { *i } -> const Value_type<I>&;
+        { *i } -> const value_type_t<I>&;
 
         // It can be incremented
         { ++i } -> I&;        
@@ -89,30 +103,40 @@ concept bool Range()
     return requires (R range)
     {
 	    // Must have a value type
-        typename Value_type<R>;
+        typename value_type_t<R>;
 	    // Must have an iterator type
-	    typename Iterator_type<R>;
+	    typename iterator_t<R>;
 
-        { begin(range) } -> Iterator_type<R>;
-        { end(range) } -> Iterator_type<R>;
+        { begin(range) } -> iterator_t<R>;
+        { end(range) } -> iterator_t<R>;
         
         // The iterator type must be an input iterator
-        requires Input_iterator<Iterator_type<R>>();
+        requires Input_iterator<iterator_t<R>>();
 
         // The value of R is the same as it's
         // iterator value type
-        requires Same< Value_type<R>,
-                       Value_type<Iterator_type<R>>>();
+        requires Same_as< value_type_t<R>,
+                       value_type_t<iterator_t<R>>>();
     };   
+}
+
+template <typename S>
+concept bool Sequence()
+{
+    return Range<S>() && requires (S seq)
+    {
+        { seq.front() } -> const value_type_t<S>&;
+        { seq.back() } -> const value_type_t<S>&;
+    };
 }
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-template<Range R, Equality_comparable T>
-  requires Same<T, Value_type<R>>()
-bool in (R const& range, T const& value)
+template<Sequence S, Equality_comparable T>
+  requires Same_as<T, value_type_t<S>>()
+bool in (S const& seq, T const& value)
 {
-    for(Equality_comparable const& x : range)
+    for(auto const& x : seq)
     {
         if(x == value)
         {

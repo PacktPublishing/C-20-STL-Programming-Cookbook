@@ -18,6 +18,20 @@ concept bool Equality_comparable()
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 template <typename T, typename U>
+concept bool Equality_comparable()
+{
+    return requires (T t, U u)
+    {
+        {t == u} -> bool;
+        {u == t} -> bool;        
+        {t != u} -> bool;
+        {u != t} -> bool;        
+    };   
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+template <typename T, typename U>
 concept bool Same()
 {
     return std::is_same<T, U>::value;   
@@ -109,7 +123,7 @@ concept bool Range()
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 template<Range R, Equality_comparable T>
-  requires Same<T, Value_type<R>>()
+  requires Equality_comparable<T, Value_type<R>>()
 bool in (R const& range, T const& value)
 {
     for(Equality_comparable const& x : range)
@@ -132,7 +146,7 @@ int main()
 
     std::vector<std::string> v {value_one, value_two, value_three};
     
-    const bool found = in(v, value_one);
+    const bool found = in(v, "one");
 
     std::cout << "value was found: " << found << std::endl;
 

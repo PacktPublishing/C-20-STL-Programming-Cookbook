@@ -18,14 +18,11 @@ bool in (S const& seq, T const& value)
 //-----------------------------------------------------------------------------
 int main()
 {
-    const std::string value_one("one");
-    const std::string value_two("two");
-    const std::string value_three("three");
+    std::vector<std::string> v{"one", "two", "three"};
+    bool found = in(v, "two");
 
-    std::vector<std::string> v {value_one, value_two, value_three};
-    bool found = in(v, value_one);
     std::cout << "value was found in sequence: " <<
-        std::boolalpha << found << std::endl;
+       std::boolalpha << found << std::endl;
 
     // this line do not compile
     //found = in(v, 1);

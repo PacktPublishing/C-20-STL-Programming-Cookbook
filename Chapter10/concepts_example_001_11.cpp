@@ -3,7 +3,16 @@
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
+template <typename T, typename U>
+concept bool Same()
+{
+    return std::is_same<T, U>::value;
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 template<typename S, typename T>
+ requires Same<T, typename S::value_type>()
 bool in (S const& seq, T const& value)
 {
     for(auto const& x : seq) {

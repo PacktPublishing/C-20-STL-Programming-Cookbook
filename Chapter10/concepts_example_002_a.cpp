@@ -51,9 +51,8 @@ using value_type_t = typename value_type<T>::type;
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-template<typename R, typename T>
-  requires Range<R>() && Equality_comparable<T>() &&
-   Same<T, value_type_t<R>>()
+template<Range R, Equality_comparable T>
+  requires Same<T, value_type_t<R>>()
 bool in (R const& range, T const& value)
 {
     for(Equality_comparable const& x : range)

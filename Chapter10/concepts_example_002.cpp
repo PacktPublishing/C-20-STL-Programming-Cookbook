@@ -6,34 +6,28 @@
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 template <typename T>
-concept bool Equality_comparable()
+concept Equality_comparable = requires (T a, T b)
 {
-    return requires (T a, T b)
-    {
-        {a == b} -> bool;
-        {a != b} -> bool;
-    };   
-}
+    {a == b} -> bool;
+    {a != b} -> bool;
+};
+
+
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 template <typename R>
-concept bool Range()
+concept bool Range = requires (R range)
 {
-    return requires (R range)
-    {
-        begin(range);
-        end(range);
-    };   
-}
+    begin(range);
+    end(range);
+};
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 template <typename T, typename U>
-concept bool Same()
-{
-    return std::is_same<T, U>::value;   
-}
+concept bool Same = std::is_same<T, U>::value;
+
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -52,8 +46,9 @@ using value_type_t = typename value_type<T>::type;
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 template<typename R, typename T>
-  requires Range<R>() && Equality_comparable<T>() &&
-   Same<T, value_type_t<R>>()
+  requires Range<R> &&
+           Equality_comparable<T> &&
+           Same<value_type_t<R>, T>
 bool in (R const& range, T const& value)
 {
     for(Equality_comparable const& x : range)
@@ -66,21 +61,14 @@ bool in (R const& range, T const& value)
     return false;
 }
 
-
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 int main()
 {
-    const std::string value_one("one");
-    const std::string value_two("two");
-    const std::string value_three("three");
-
-    std::vector<std::string> v {value_one, value_two, value_three};
+    std::vector<std::string> v {"one", "two", "three"};
     
-    const bool found = in(v, value_one);
-
+    const bool found = in(v, std::string("two"));
     std::cout << "value was found: " << found << std::endl;
-
 
     return 0;
 }

@@ -28,6 +28,7 @@ concept Same = std::is_same<T, U>::value;
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
+// The value_type of a class is a member type
 template<typename T>
 struct value_type;
 

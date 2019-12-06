@@ -26,7 +26,6 @@ concept Range = requires (R range)
 template <typename T, typename U>
 concept Same = std::is_same<T, U>::value;
 
-
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 template<typename T>

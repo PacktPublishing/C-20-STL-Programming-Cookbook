@@ -60,7 +60,7 @@ using value_type_t = typename value_type<T>::type;
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 template<Range R, Equality_comparable T>
-  requires Same<Value_type<R>, T>
+  requires Same<value_type_t<R>, T>
 bool in (R const& range, T const& value)
 {
     for(const auto& x : range) {

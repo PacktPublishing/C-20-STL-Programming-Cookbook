@@ -125,7 +125,7 @@ concept Sequence = Range<S> && requires (S seq)
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 template<Sequence S, Equality_comparable T>
-  requires Same<T, value_type_t<S>>()
+  requires Same<T, value_type_t<S>>
 bool in (S const& seq, T const& value)
 {
     for(auto const& x : seq) {

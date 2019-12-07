@@ -6,34 +6,41 @@
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 template <typename T>
-concept bool Equality_comparable()
+concept Equality_comparable = requires (T a, T b)
 {
-    return requires (T a, T b)
-    {
-        {a == b} -> bool;
-        {a != b} -> bool;
-    };   
-}
+    {a == b} -> bool;
+    {a != b} -> bool;
+};
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
+template <typename T, typename U>
+concept Same = std::is_same<T, U>::value;
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+template<typename T>
+struct iterator_type;
+
 // The iterator_type of a class is a member type
 template<typename T>
-requires requires { typename T::iterator; }
 struct iterator_type
 {
     using type = typename T::iterator;
 };
 
 template<typename T>
-using Iterator_type = typename iterator_type<T>::type;
+using iterator_type_t = typename iterator_type<T>::type;
 
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 // The value_type of a class is a member type
 template<typename T>
-requires requires { typename T::value_type; }
+struct value_type;
+
+// The value_type of a class is a member type
+template<typename T>
 struct value_type
 {
     using type = typename T::value_type;
@@ -46,7 +53,7 @@ struct value_type<T*>
     using type = T;
 };
 
-// The value_type of an arry is its element type.
+// The value_type of an array is its element type.
 template<typename T, int N>
 struct value_type<T[N]>
 {
@@ -54,46 +61,31 @@ struct value_type<T[N]>
 };
 
 template<typename T>
-using Value_type = typename value_type<T>::type;
-
+using value_type_t = typename value_type<T>::type;
 
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 template <typename R>
-concept bool Range()
+concept Range = requires (R range)
 {
-    return requires (R range)
-    {
-	    // Must have a value type
-        typename Value_type<R>;
-	    // Must have an iterator type
-	    typename Iterator_type<R>;
+	// Must have a value type
+	typename value_type_t<R>;
+	// Must have an iterator type
+	typename iterator_type_t<R>;
 
-        { begin(range) } -> Iterator_type<R>;
-        { end(range) } -> Iterator_type<R>;
-    };   
-}
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-template <typename T, typename U>
-concept bool Same()
-{
-    return std::is_same<T, U>::value;   
-}
-
+	{range.begin()} -> iterator_type_t<R>;
+	{range.end()} -> iterator_type_t<R>;
+};
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 template<Range R, Equality_comparable T>
-  requires Same<T, Value_type<R>>()
+  requires Same<value_type_t<R>, T>
 bool in (R const& range, T const& value)
 {
-    for(Equality_comparable const& x : range)
-    {
-        if(x == value)
-        {
+    for(const auto& x : range) {
+        if(x == value) {
             return true;
         }
     }
@@ -104,16 +96,10 @@ bool in (R const& range, T const& value)
 //-----------------------------------------------------------------------------
 int main()
 {
-    const std::string value_one("one");
-    const std::string value_two("two");
-    const std::string value_three("three");
-
-    std::vector<std::string> v {value_one, value_two, value_three};
+    std::vector<std::string> v {"one", "two", "three"};
     
-    const bool found = in(v, value_one);
-
+    const bool found = in(v, std::string("two"));
     std::cout << "value was found: " << found << std::endl;
 
     return 0;
 }
-

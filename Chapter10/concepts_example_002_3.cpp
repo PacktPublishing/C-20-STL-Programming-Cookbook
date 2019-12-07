@@ -53,7 +53,7 @@ struct value_type<T*>
     using type = T;
 };
 
-// The value_type of an arry is its element type.
+// The value_type of an array is its element type.
 template<typename T, int N>
 struct value_type<T[N]>
 {
@@ -62,7 +62,6 @@ struct value_type<T[N]>
 
 template<typename T>
 using value_type_t = typename value_type<T>::type;
-
 
 
 //-----------------------------------------------------------------------------
@@ -105,4 +104,3 @@ int main()
 
     return 0;
 }
-

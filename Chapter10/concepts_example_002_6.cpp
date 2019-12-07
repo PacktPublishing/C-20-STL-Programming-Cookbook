@@ -6,42 +6,53 @@
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 template <typename T>
-concept bool Equality_comparable()
+concept Equality_comparable = requires (T a, T b)
 {
-    return requires (T a, T b)
-    {
-        {a == b} -> bool;
-        {a != b} -> bool;
-    };   
-}
+    {a == b} -> bool;
+    {a != b} -> bool;
+};
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 template <typename T, typename U>
-concept bool Equality_comparable()
-{
-    return requires (T t, U u)
-    {
-        {t == u} -> bool;
-        {u == t} -> bool;        
-        {t != u} -> bool;
-        {u != t} -> bool;        
-    };   
-}
+concept Same = std::is_same<T, U>::value;
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 template <typename T, typename U>
-concept bool Same()
+concept Equality_comparable = requires (T t, U u)
 {
-    return std::is_same<T, U>::value;   
-}
+	{t == u} -> bool;
+	{u == t} -> bool;
+	{t != u} -> bool;
+	{u != t} -> bool;
+};
+
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+template<typename T>
+struct iterator_type;
+
+// The iterator_type of a class is a member type
+template<typename T>
+struct iterator_type
+{
+    using type = typename T::iterator;
+};
+
+template<typename T>
+using iterator_type_t = typename iterator_type<T>::type;
+
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 // The value_type of a class is a member type
 template<typename T>
-requires requires { typename T::value_type; }
+struct value_type;
+
+// The value_type of a class is a member type
+template<typename T>
 struct value_type
 {
     using type = typename T::value_type;
@@ -62,74 +73,54 @@ struct value_type<T[N]>
 };
 
 template<typename T>
-using Value_type = typename value_type<T>::type;
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-// The iterator_type of a class is a member type
-template<typename T>
-requires requires { typename T::iterator; }
-struct iterator_type
-{
-    using type = typename T::iterator;
-};
-
-template<typename T>
-using Iterator_type = typename iterator_type<T>::type;
+using value_type_t = typename value_type<T>::type;
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 template <typename I>
-concept bool Input_iterator()
+concept Input_iterator = requires(I i)
 {
-    return requires(I i)
-    {
-  	    // Must have a value type
-        typename Value_type<I>;
+	// Must have a value type
+	typename value_type_t<I>;
 
-        // It can be dereferenced
-        { *i } -> const Value_type<I>&;
+	// It can be dereferenced
+	{ *i } -> const value_type_t<I>&;
 
-        // It can be incremented
-        { ++i } -> I&;        
-    };
-}
+	// It can be incremented
+	{ ++i } -> I&;
+};
+
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 template <typename R>
-concept bool Range()
+concept Range = requires (R range)
 {
-    return requires (R range)
-    {
-	    // Must have a value type
-        typename Value_type<R>;
-	    // Must have an iterator type
-	    typename Iterator_type<R>;
+	// Must have a value type
+	typename value_type_t<R>;
+	// Must have an iterator type
+	typename iterator_type_t<R>;
 
-        { begin(range) } -> Iterator_type<R>;
-        { end(range) } -> Iterator_type<R>;
-        
-        // The iterator type must be an input iterator
-        requires Input_iterator<Iterator_type<R>>();
+	{ range.begin() } -> iterator_type_t<R>;
+	{ range.end() } -> iterator_type_t<R>;
 
-        // The value of R is the same as it's
-        // iterator value type
-        requires Same< Value_type<R>,
-                       Value_type<Iterator_type<R>>>();
-    };   
-}
+	// The iterator type must be an input iterator
+	requires Input_iterator<iterator_type_t<R>>;
+
+	// The value of R is the same as it's
+	// iterator value type
+	requires Same< value_type_t<R>,
+				   value_type_t<iterator_type_t<R>> >;
+};
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 template<Range R, Equality_comparable T>
-  requires Equality_comparable<T, Value_type<R>>()
+  requires Equality_comparable<T, value_type_t<R>>
 bool in (R const& range, T const& value)
 {
-    for(Equality_comparable const& x : range)
-    {
-        if(x == value)
-        {
+    for(auto const& x : range) {
+        if(x == value) {
             return true;
         }
     }
@@ -140,16 +131,10 @@ bool in (R const& range, T const& value)
 //-----------------------------------------------------------------------------
 int main()
 {
-    const std::string value_one("one");
-    const std::string value_two("two");
-    const std::string value_three("three");
-
-    std::vector<std::string> v {value_one, value_two, value_three};
+    std::vector<std::string> v {"one", "two", "three"};
     
-    const bool found = in(v, "one");
-
+    const bool found = in(v, std::string("two"));
     std::cout << "value was found: " << found << std::endl;
 
     return 0;
 }
-

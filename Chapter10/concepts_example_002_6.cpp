@@ -20,7 +20,7 @@ concept Same = std::is_same<T, U>::value;
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 template <typename T, typename U>
-concept Equality_comparable = requires (T t, U u)
+concept Equality_comparable_types = requires (T t, U u)
 {
 	{t == u} -> bool;
 	{u == t} -> bool;
@@ -116,7 +116,7 @@ concept Range = requires (R range)
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 template<Range R, Equality_comparable T>
-  requires Equality_comparable<T, value_type_t<R>>
+  requires Equality_comparable_types<T, value_type_t<R>>
 bool in (R const& range, T const& value)
 {
     for(auto const& x : range) {

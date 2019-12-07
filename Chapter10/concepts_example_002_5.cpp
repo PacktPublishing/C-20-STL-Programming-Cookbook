@@ -93,12 +93,12 @@ concept Range = requires (R range)
 	{ range.end() } -> iterator_type_t<R>;
 
 	// The iterator type must be an input iterator
-	requires Input_iterator<iterator_type_t<R>>();
+	requires Input_iterator<iterator_type_t<R>>;
 
 	// The value of R is the same as it's
 	// iterator value type
 	requires Same< value_type_t<R>,
-				   value_type_t<iterator_type_t<R>> >();
+				   value_type_t<iterator_type_t<R>> >;
 };
 
 

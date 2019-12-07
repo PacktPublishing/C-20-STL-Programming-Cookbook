@@ -125,7 +125,5 @@ int main()
     const bool found = in(v, std::string("two"));
     std::cout << "value was found: " << found << std::endl;
 
-    std::cout << "value was found: " << found << std::endl;
-
     return 0;
 }

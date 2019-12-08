@@ -26,7 +26,7 @@ template<typename T>
 concept bool Has_String_Func = requires(T a)
 {
     // for T exists a to_string function, 
-    // takeing T as parameter and returning a std::string
+    // taking T as parameter and returning a std::string
     {to_string(a)} -> std::string;
 };
 

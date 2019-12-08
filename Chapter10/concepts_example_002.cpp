@@ -14,15 +14,6 @@ concept Equality_comparable = requires (T a, T b)
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-template <typename R>
-concept Range = requires (R range)
-{
-    range.begin();
-    range.end();
-};
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
 template <typename T, typename U>
 concept Same = std::is_same<T, U>::value;
 
@@ -32,13 +23,26 @@ template<typename T>
 struct value_type;
 
 template<typename T>
-struct value_type
+using value_type_t = typename value_type<T>::type;
+
+template<typename T>
+requires requires {typename T::value_type;}
+struct value_type<T>
 {
     using type = typename T::value_type;
 };
 
-template<typename T>
-using value_type_t = typename value_type<T>::type;
+
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+template <typename R>
+concept Range = requires (R range)
+{
+    range.begin();
+    range.end();
+};
+
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------

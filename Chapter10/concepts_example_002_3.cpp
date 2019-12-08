@@ -22,16 +22,16 @@ concept Same = std::is_same<T, U>::value;
 template<typename T>
 struct iterator_type;
 
-// The iterator_type of a class is a member type
-template<typename T>
-struct iterator_type
-{
-    using type = typename T::iterator;
-};
-
 template<typename T>
 using iterator_type_t = typename iterator_type<T>::type;
 
+// The iterator_type of a class is a member type
+template<typename T>
+requires requires {typename T::iterator;}
+struct iterator_type<T>
+{
+    using type = typename T::iterator;
+};
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -39,9 +39,14 @@ using iterator_type_t = typename iterator_type<T>::type;
 template<typename T>
 struct value_type;
 
+template<typename T>
+using value_type_t = typename value_type<T>::type;
+
+
 // The value_type of a class is a member type
 template<typename T>
-struct value_type
+requires requires {typename T::value_type;}
+struct value_type<T>
 {
     using type = typename T::value_type;
 };
@@ -59,9 +64,6 @@ struct value_type<T[N]>
 {
     using type = T;
 };
-
-template<typename T>
-using value_type_t = typename value_type<T>::type;
 
 
 //-----------------------------------------------------------------------------

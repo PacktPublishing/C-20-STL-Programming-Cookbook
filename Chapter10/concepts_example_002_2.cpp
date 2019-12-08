@@ -14,15 +14,6 @@ concept Equality_comparable = requires (T a, T b)
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-template <typename R>
-concept Range = requires (R range)
-{
-    range.begin();
-    range.end();
-};
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
 template <typename T, typename U>
 concept Same = std::is_same<T, U>::value;
 
@@ -32,9 +23,14 @@ concept Same = std::is_same<T, U>::value;
 template<typename T>
 struct value_type;
 
+template<typename T>
+using value_type_t = typename value_type<T>::type;
+
+
 // The value_type of a class is a member type
 template<typename T>
-struct value_type
+requires requires {typename T::value_type;}
+struct value_type<T>
 {
     using type = typename T::value_type;
 };
@@ -46,16 +42,21 @@ struct value_type<T*>
     using type = T;
 };
 
-// The value_type of an arry is its element type.
+// The value_type of an array is its element type.
 template<typename T, int N>
 struct value_type<T[N]>
 {
     using type = T;
 };
 
-template<typename T>
-using value_type_t = typename value_type<T>::type;
-
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+template <typename R>
+concept Range = requires (R range)
+{
+    range.begin();
+    range.end();
+};
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------

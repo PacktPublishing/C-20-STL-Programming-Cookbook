@@ -34,16 +34,16 @@ concept Equality_comparable_types = requires (T t, U u)
 template<typename T>
 struct iterator_type;
 
-// The iterator_type of a class is a member type
-template<typename T>
-struct iterator_type
-{
-    using type = typename T::iterator;
-};
-
 template<typename T>
 using iterator_type_t = typename iterator_type<T>::type;
 
+// The iterator_type of a class is a member type
+template<typename T>
+requires requires {typename T::iterator;}
+struct iterator_type<T>
+{
+    using type = typename T::iterator;
+};
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -51,9 +51,14 @@ using iterator_type_t = typename iterator_type<T>::type;
 template<typename T>
 struct value_type;
 
+template<typename T>
+using value_type_t = typename value_type<T>::type;
+
+
 // The value_type of a class is a member type
 template<typename T>
-struct value_type
+requires requires {typename T::value_type;}
+struct value_type<T>
 {
     using type = typename T::value_type;
 };
@@ -72,8 +77,6 @@ struct value_type<T[N]>
     using type = T;
 };
 
-template<typename T>
-using value_type_t = typename value_type<T>::type;
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -82,7 +85,6 @@ struct key_type;
 
 template<typename T>
 using key_type_t = typename key_type<T>::type;
-
 
 // The key_type of a class is a member type
 template<typename T>
@@ -162,7 +164,7 @@ requires (A assoc_c, key_type_t<A> k)
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 template<Sequence S, Equality_comparable T>
-    requires Same<T, value_type_t<S>>
+    requires Equality_comparable_types<T, value_type_t<S>>
 bool in (S const& seq, T const& value)
 {
     for(auto const& x : seq) {
@@ -187,7 +189,7 @@ bool in (A const& assoc, K const& key)
 int main()
 {
     std::vector<std::string> v {"one", "two", "three"};
-    const bool found = in(v, std::string("two"));
+    const bool found = in(v, "two");
     std::cout << "value was found: " << found << std::endl;
 
 

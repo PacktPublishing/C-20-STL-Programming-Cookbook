@@ -80,15 +80,17 @@ using value_type_t = typename value_type<T>::type;
 template<typename T>
 struct key_type;
 
+template<typename T>
+using key_type_t = typename key_type<T>::type;
+
+
 // The key_type of a class is a member type
 template<typename T>
-struct key_type
+requires requires {typename T::key_type;}
+struct key_type<T>
 {
     using type = typename T::key_type;
 };
-
-template<typename T>
-using key_type_t = typename key_type<T>::type;
 
 
 //-----------------------------------------------------------------------------
@@ -132,7 +134,7 @@ concept Range = requires (R range)
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 template <typename S>
-concept Sequence = Range<S>() && requires (S seq)
+concept Sequence = Range<S> && requires (S seq)
 {
 	{ seq.front() } -> const value_type_t<S>&;
 	{ seq.back() } -> const value_type_t<S>&;
@@ -187,6 +189,7 @@ int main()
     std::vector<std::string> v {"one", "two", "three"};
     const bool found = in(v, std::string("two"));
     std::cout << "value was found: " << found << std::endl;
+
 
     std::set<std::string> s {"one", "two", "three"};
     const bool found_assoc = in(s, std::string("two"));
